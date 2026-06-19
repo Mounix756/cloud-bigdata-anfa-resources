@@ -36,7 +36,7 @@ Dans cette séance, j'ai mis en place un stockage objet local avec MinIO via Doc
 
 ## Difficultés rencontrées
 
-Aucune difficulté majeure. J'ai juste pris le temps de bien comprendre la différence entre les credentials root de MinIO et les clés applicatives avant d'écrire le script Python.
+Aucune difficulté majeure.
 
 ---
 
