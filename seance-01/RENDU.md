@@ -1,42 +1,42 @@
 # Rendu Séance 1
 
-**Nom et prénom :** *BLAISE Mouné Tchoubou*  
-**Identifiant GitHub :** *Mounix756*  
+**Nom et prénom :** BLAISE Mouné Tchoubou  
+**Identifiant GitHub :** Mounix756  
 **Branche :** `seance-01`
 
 ---
 
 ## Résumé de la séance
 
-Cette première séance avait pour objectif de poser la première brique du projet Anfa : un stockage objet local avec MinIO, alimenté par un script Python via l'API compatible S3. Nous avons également exploré les fondamentaux du cloud computing (modèles de service, de déploiement, caractéristiques NIST) à travers des exercices d'application.
+Dans cette séance, j'ai mis en place un stockage objet local avec MinIO via Docker, puis j'ai écrit un script Python pour y déposer les fichiers CSV du référentiel Anfa. En parallèle, les exercices m'ont permis de revoir les concepts fondamentaux du cloud : modèles de service (IaaS, PaaS, SaaS, FaaS), modèles de déploiement, et les 5 caractéristiques NIST.
 
 ---
 
 ## Étapes principales
 
-1. **Installation et vérification de Docker** — vérification que `docker --version` et `docker compose version` répondent correctement (Docker ≥ 24, Compose ≥ 2.20).
-2. **Fork du dépôt** — fork de `cloud-bigdata-anfa-resources` sur le compte GitHub personnel, puis clonage local.
-3. **Création de la branche de travail** — `git checkout -b seance-01`, puis création du dossier `seance-01/`.
-4. **Lancement de MinIO** — téléchargement de l'image `minio/minio` et démarrage du conteneur `anfa-minio` avec exposition des ports 9000 (API S3) et 9001 (console web).
-5. **Administration MinIO via `mc`** — connexion au conteneur, configuration de l'alias `local`, création du bucket `anfa-raw`, génération de la paire de clés applicatives `anfa-app-key` / `anfa-app-secret-2026`.
-6. **Écriture et exécution du script Python** — création de l'environnement virtuel, installation de `boto3`, écriture de `upload_referentiel.py`, et upload des 4 fichiers CSV du référentiel Anfa.
-7. **Vérification visuelle** — consultation de la console MinIO pour confirmer la présence des 4 CSV sous le préfixe `referentiel/`.
-8. **Rédaction du `docker-compose.yml`** — création du fichier équivalent à la commande `docker run`, versionnable et lisible.
-9. **Commit et push** — envoi de la branche `seance-01` vers le fork GitHub.
+1. Vérification que Docker fonctionne (`docker --version` et `docker compose version`).
+2. Fork du dépôt `cloud-bigdata-anfa-resources` et clonage en local.
+3. Création de la branche `seance-01` et du dossier `seance-01/`.
+4. Téléchargement de l'image MinIO et lancement du conteneur `anfa-minio` sur les ports 9000 et 9001.
+5. Entrée dans le conteneur via `docker exec`, configuration de `mc`, création du bucket `anfa-raw` et génération des clés applicatives `anfa-app-key` / `anfa-app-secret-2026`.
+6. Création de l'environnement virtuel Python, installation de `boto3`, écriture et exécution du script `upload_referentiel.py` pour uploader les 4 CSV.
+7. Vérification dans la console MinIO (`http://localhost:9001`) que les fichiers sont bien présents sous `referentiel/`.
+8. Création du fichier `docker-compose.yml` équivalent à la commande `docker run`.
+9. Rédaction du `RENDU.md`, commits et push vers GitHub.
 
 ---
 
 ## Capture d'écran
 
-![Bucket anfa-raw avec les 4 CSV dans la console MinIO](captures/bucket-anfa-raw.png)
+![Bucket anfa-raw avec les 4 CSV](captures/bucket-anfa-raw.png)
 
-*La capture montre les quatre fichiers CSV (`arrets.csv`, `bus.csv`, `lignes.csv`, `tarifs.csv`) visibles dans le bucket `anfa-raw` sous le préfixe `referentiel/`, depuis la console web MinIO accessible sur `http://localhost:9001`.*
+*Les 4 fichiers CSV sont visibles dans le bucket `anfa-raw` sous le préfixe `referentiel/`, depuis la console MinIO sur `http://localhost:9001`.*
 
 ---
 
 ## Difficultés rencontrées
 
-*Aucune*
+Aucune difficulté majeure. J'ai juste pris le temps de bien comprendre la différence entre les credentials root de MinIO et les clés applicatives avant d'écrire le script Python.
 
 ---
 
@@ -50,7 +50,7 @@ Cette première séance avait pour objectif de poser la première brique du proj
 
 **Réponse : D. Open source obligatoire**
 
-**Justification :** Le NIST définit cinq caractéristiques essentielles du cloud (libre-service à la demande, accès réseau large bande, mutualisation des ressources, élasticité rapide, service mesuré) ; l'open source n'en fait pas partie — un fournisseur peut proposer des services cloud entièrement propriétaires.
+Le NIST liste 5 caractéristiques essentielles : libre-service à la demande, accès réseau large bande, mutualisation des ressources, élasticité rapide et service mesuré. L'open source n'en fait pas partie — un cloud peut être 100% propriétaire et rester du cloud.
 
 ---
 
@@ -58,15 +58,15 @@ Cette première séance avait pour objectif de poser la première brique du proj
 
 **Réponse : C. SaaS**
 
-**Justification :** Gmail est une application complète accessible via le navigateur, sans aucune installation ni gestion d'infrastructure ou de plateforme de la part de l'utilisateur, ce qui correspond exactement au modèle Software as a Service.
+On utilise Gmail directement dans le navigateur sans rien installer, sans gérer de serveur ni de plateforme. L'application est entièrement fournie et maintenue par Google : c'est du SaaS.
 
 ---
 
-#### 1.3 — Modèle pour déclencher une vérification GPS à chaque arrivée de position
+#### 1.3 — Modèle pour la vérification GPS des bus Anfa
 
 **Réponse : D. FaaS**
 
-**Justification :** Le Function as a Service (ex. AWS Lambda, Google Cloud Functions) permet d'exécuter une fonction à la demande en réponse à un événement (ici, l'arrivée d'une position GPS) en quelques millisecondes, sans serveur dédié tournant en permanence, ce qui répond exactement au besoin décrit.
+Le besoin est clair : déclencher une fonction à chaque arrivée GPS, en millisecondes, sans serveur qui tourne en permanence. C'est exactement le cas d'usage du FaaS (AWS Lambda, Google Cloud Functions) : on paye et on consomme des ressources uniquement quand la fonction s'exécute.
 
 ---
 
@@ -74,7 +74,7 @@ Cette première séance avait pour objectif de poser la première brique du proj
 
 **Réponse : C. Cloud hybride**
 
-**Justification :** Le cloud hybride permet de conserver les données sensibles soumises à réglementation dans un cloud privé ou on-premise, tout en profitant de l'élasticité du cloud public pour les traitements analytiques non sensibles.
+La banque a deux contraintes qui s'opposent : garder les données sensibles sous contrôle (cloud privé ou on-premise) et profiter de l'élasticité pour les analyses non sensibles (cloud public). Le cloud hybride est la seule option qui répond aux deux à la fois.
 
 ---
 
@@ -82,7 +82,7 @@ Cette première séance avait pour objectif de poser la première brique du proj
 
 **Réponse : B. La situation où une entreprise ne peut plus changer de fournisseur sans coûts ou risques majeurs**
 
-**Justification :** Le vendor lock-in désigne la dépendance technologique, contractuelle ou économique qui rend difficile ou coûteux le changement de fournisseur cloud (APIs propriétaires, formats de données non portables, coûts de migration élevés, etc.).
+Le vendor lock-in, c'est quand on est tellement dépendant d'un fournisseur (APIs propriétaires, formats non portables, coûts de migration élevés) qu'en changer devient trop risqué ou trop cher, même si on le voulait.
 
 ---
 
@@ -90,7 +90,7 @@ Cette première séance avait pour objectif de poser la première brique du proj
 
 **Réponse : C. Un service open source est forcément moins performant qu'un service managé propriétaire**
 
-**Justification :** Cette affirmation est fausse : de nombreux services managés des grands clouds (Amazon RDS, Google Dataproc, Azure HDInsight) reposent eux-mêmes sur des briques open source (PostgreSQL, Hadoop, Kafka), et les performances dépendent de l'architecture et de l'optimisation, non du caractère open source ou propriétaire.
+C'est faux. Amazon RDS tourne sur PostgreSQL, Google Dataproc sur Hadoop, Azure HDInsight sur Kafka — tous open source. La performance dépend de l'architecture et de l'optimisation, pas du fait qu'un logiciel soit open source ou propriétaire.
 
 ---
 
@@ -98,14 +98,14 @@ Cette première séance avait pour objectif de poser la première brique du proj
 
 | Service | Modèle | Justification |
 |---|---|---|
-| Google Compute Engine (machine virtuelle) | **IaaS** | Fournit des machines virtuelles brutes sur lesquelles l'utilisateur installe et gère lui-même son OS, ses middlewares et ses applications. |
-| AWS Lambda | **FaaS** | Exécute des fonctions à la demande en réponse à des événements, sans aucun serveur à provisionner ou gérer. |
-| Snowflake (entrepôt de données) | **SaaS** | Entrepôt de données entièrement géré et accessible via une interface web ou des connecteurs SQL, sans infrastructure à administrer. |
-| Heroku | **PaaS** | Plateforme qui prend en charge le déploiement, la mise à l'échelle et la gestion des applications ; le développeur pousse uniquement son code. |
-| Microsoft 365 (Word, Excel en ligne) | **SaaS** | Suite bureautique complète consommée directement via le navigateur, sans installation ni gestion de plateforme. |
-| Databricks (Spark managé) | **PaaS** | Plateforme qui fournit un environnement Spark managé avec notebooks et orchestration ; l'utilisateur se concentre sur ses traitements, pas sur les clusters. |
-| Microsoft Azure Functions | **FaaS** | Exécution de fonctions à la demande déclenchées par des événements (HTTP, file de messages, timer…), sans serveur dédié permanent. |
-| Tableau Online | **SaaS** | Outil de visualisation de données hébergé et géré par Tableau/Salesforce, accessible via navigateur sans aucune installation locale. |
+| Google Compute Engine | **IaaS** | On reçoit une machine virtuelle brute : à nous d'installer l'OS, les dépendances et l'application. |
+| AWS Lambda | **FaaS** | On dépose une fonction, AWS l'exécute à la demande sur événement. Aucun serveur à gérer. |
+| Snowflake | **SaaS** | Entrepôt de données 100% managé, accessible via SQL ou interface web, sans aucune infrastructure à administrer. |
+| Heroku | **PaaS** | On pousse son code, Heroku gère le déploiement, la mise à l'échelle et la disponibilité. |
+| Microsoft 365 (Word, Excel en ligne) | **SaaS** | Applications complètes dans le navigateur, maintenues par Microsoft, sans rien à installer. |
+| Databricks (Spark managé) | **PaaS** | Plateforme Spark clé en main avec notebooks et orchestration ; on se concentre sur les traitements, pas sur les clusters. |
+| Microsoft Azure Functions | **FaaS** | Fonctions déclenchées par des événements (HTTP, timer, file de messages), sans serveur dédié. |
+| Tableau Online | **SaaS** | Outil de visualisation hébergé par Salesforce/Tableau, accessible depuis n'importe quel navigateur. |
 
 ---
 
@@ -114,21 +114,22 @@ Cette première séance avait pour objectif de poser la première brique du proj
 #### 3.1 — Commande `docker run`
 
 ```bash
-docker run -d --name analyse-anfa -p 8888:8888 -v /home/koffi/notebooks:/notebooks \
--e JUPYTER_TOKEN=anfa-token \
-jupyter/pyspark-notebook
+docker run -d --name analyse-anfa -p 8888:8888 \
+  -v /home/koffi/notebooks:/notebooks \
+  -e JUPYTER_TOKEN=anfa-token \
+  jupyter/pyspark-notebook
 ```
 
 | Option | Ce qu'elle fait |
 |---|---|
-| `-d` | Lance le conteneur en arrière-plan (mode « detached ») : le terminal reste libre et le conteneur continue de tourner. |
-| `--name analyse-anfa` | Donne le nom `analyse-anfa` au conteneur, ce qui permet de le désigner par ce nom dans les commandes suivantes (`docker stop analyse-anfa`, etc.) plutôt que par son ID aléatoire. |
-| `-p 8888:8888` | Redirige le port 8888 de la machine hôte vers le port 8888 du conteneur, rendant Jupyter accessible depuis le navigateur à `http://localhost:8888`. |
-| `-v /home/koffi/notebooks:/notebooks` | Monte le dossier `/home/koffi/notebooks` de la machine hôte dans le conteneur à l'emplacement `/notebooks` : les notebooks créés dans le conteneur sont persistés sur l'hôte (et vice-versa). |
-| `-e JUPYTER_TOKEN=anfa-token` | Définit la variable d'environnement `JUPYTER_TOKEN` à la valeur `anfa-token`, qui servira de mot de passe pour accéder à l'interface Jupyter. |
-| `jupyter/pyspark-notebook` | Spécifie l'image Docker à utiliser : une image officielle Jupyter qui inclut PySpark, permettant d'exécuter des notebooks avec Apache Spark intégré. |
+| `-d` | Lance le conteneur en arrière-plan (detached), le terminal reste disponible. |
+| `--name analyse-anfa` | Nomme le conteneur `analyse-anfa` pour pouvoir le retrouver facilement ensuite. |
+| `-p 8888:8888` | Expose le port 8888 du conteneur sur le port 8888 de la machine hôte → Jupyter accessible sur `http://localhost:8888`. |
+| `-v /home/koffi/notebooks:/notebooks` | Monte le dossier local `/home/koffi/notebooks` dans le conteneur : les notebooks sont sauvegardés sur la machine hôte même si le conteneur est supprimé. |
+| `-e JUPYTER_TOKEN=anfa-token` | Définit le token d'accès à Jupyter (équivalent d'un mot de passe). |
+| `jupyter/pyspark-notebook` | L'image Docker à utiliser : Jupyter avec PySpark déjà installé. |
 
-**Ce que fait la commande entière :** Elle lance en arrière-plan un serveur Jupyter Notebook avec PySpark préinstallé, protégé par le token `anfa-token`, accessible sur `http://localhost:8888`, et dont les notebooks sont sauvegardés sur le disque local de l'utilisateur `koffi` (le dossier local est monté dans le conteneur).
+La commande entière lance un serveur Jupyter+PySpark en arrière-plan, protégé par le token `anfa-token`, accessible sur `http://localhost:8888`, avec les notebooks sauvegardés sur le disque de `koffi`.
 
 ---
 
@@ -154,37 +155,26 @@ volumes:
   minio-data:
 ```
 
-**a. URLs accessibles depuis le navigateur de l'hôte :**
+**a. URLs accessibles depuis le navigateur :**
 
-- `http://localhost:9000` — l'API S3 de MinIO (utilisée par les programmes, les SDK boto3, mc…)
-- `http://localhost:9001` — la console web d'administration de MinIO (interface graphique)
+- `http://localhost:9000` → API S3 (utilisée par les programmes, boto3, mc…)
+- `http://localhost:9001` → Console web d'administration MinIO
 
-**b. Que se passe-t-il si on supprime le conteneur puis qu'on relance `docker compose up -d` ?**
+**b. Les données sont-elles perdues si on supprime le conteneur ?**
 
-Les données ne sont **pas perdues**. Le conteneur `anfa-minio` est une unité d'exécution éphémère, mais les données sont stockées dans le volume nommé `minio-data`, qui est géré indépendamment par Docker. Lorsqu'on supprime le conteneur avec `docker rm`, le volume `minio-data` subsiste sur l'hôte. Au prochain `docker compose up -d`, un nouveau conteneur est créé et remonte ce même volume : les objets déposés dans MinIO sont donc toujours là.
+Non. Le conteneur est éphémère, mais les données sont dans le volume nommé `minio-data`, qui lui survit. Quand on fait `docker rm anfa-minio`, le volume reste intact sur la machine. Au prochain `docker compose up -d`, un nouveau conteneur est créé et remonte le même volume : les fichiers sont toujours là.
 
-**c. Problème de sécurité à corriger pour la production :**
+**c. Problème de sécurité en production :**
 
-Le mot de passe root `MINIO_ROOT_PASSWORD: secret` est écrit **en clair dans le fichier YAML**, qui est généralement versionné dans Git. En production, il faudrait externaliser les secrets via un gestionnaire de secrets (HashiCorp Vault, Docker Secrets, variables d'environnement injectées par CI/CD) et ne jamais committer d'identifiants dans le code source.
+`MINIO_ROOT_PASSWORD: secret` est écrit en clair dans le fichier YAML, qui sera très probablement commité dans Git. N'importe qui ayant accès au dépôt voit le mot de passe. En production, les secrets doivent être injectés via un gestionnaire de secrets (HashiCorp Vault, Docker Secrets, variables CI/CD) et ne jamais apparaître dans le code source.
 
 ---
 
 ### Exercice 4 : Diagnostic
 
-**Code de l'étudiant :**
-```python
-s3 = boto3.client(
-    "s3",
-    endpoint_url="http://localhost:9000",
-    aws_access_key_id="anfa-admin",
-    aws_secret_access_key="anfa-password-2026",
-    ...
-)
-```
-
 **a. Cause précise de l'erreur :**
 
-L'étudiant utilise `anfa-admin` comme `access_key_id` et `anfa-password-2026` comme `secret_access_key`. Or, `anfa-admin` est le **nom d'utilisateur root** de MinIO (défini via `MINIO_ROOT_USER`), non une **access key S3**. L'API S3 de MinIO (port 9000) attend une paire `access_key` / `secret_key` applicative — c'est-à-dire les clés créées via `mc admin user svcacct add` (partie 3.4 du TP), soit `anfa-app-key` / `anfa-app-secret-2026`. MinIO ne reconnaît pas `anfa-admin` comme identifiant S3 valide, d'où l'erreur `InvalidAccessKeyId`.
+L'étudiant passe `anfa-admin` comme `aws_access_key_id`, mais `anfa-admin` est le nom d'utilisateur root de MinIO (défini dans `MINIO_ROOT_USER`), pas une access key S3. L'API S3 de MinIO attend une clé applicative créée via `mc admin user svcacct add`, ici `anfa-app-key`. MinIO ne connaît pas `anfa-admin` comme access key, d'où le `InvalidAccessKeyId`.
 
 **b. Correction du code :**
 
@@ -192,66 +182,62 @@ L'étudiant utilise `anfa-admin` comme `access_key_id` et `anfa-password-2026` c
 s3 = boto3.client(
     "s3",
     endpoint_url="http://localhost:9000",
-    aws_access_key_id="anfa-app-key",          # clé applicative créée via mc
-    aws_secret_access_key="anfa-app-secret-2026",  # secret applicatif
+    aws_access_key_id="anfa-app-key",
+    aws_secret_access_key="anfa-app-secret-2026",
     region_name="us-east-1",
 )
 ```
 
-**c. Pourquoi MinIO refuse `anfa-admin` sur l'API S3 mais l'accepte sur la console web ?**
+**c. Pourquoi ça marche sur la console web mais pas sur l'API S3 ?**
 
-La **console web** (port 9001) est l'interface d'administration de MinIO : elle accepte les identifiants root (`MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`) parce qu'elle gère l'ensemble du serveur.
-
-L'**API S3** (port 9000) est une API de stockage objet qui suit le protocole AWS S3 : elle attend des paires `access_key` / `secret_key` qui sont des identifiants programmatiques distincts, créés spécifiquement pour les applications (service accounts). Ces deux systèmes d'authentification coexistent dans MinIO mais sont séparés : les credentials root ne sont pas des access keys S3 valides.
+Ce sont deux systèmes d'authentification différents. La console web (port 9001) est l'interface d'administration de MinIO : elle accepte les credentials root (`MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`). L'API S3 (port 9000) suit le protocole AWS S3 et attend des paires `access_key` / `secret_key` applicatives, créées spécifiquement pour les programmes. Les deux coexistent dans MinIO mais ne partagent pas les mêmes identifiants.
 
 ---
 
-### Exercice 5 : Mini-cas d'architecture (PME togolaise e-commerce alimentaire)
+### Exercice 5 : Mini-cas d'architecture
 
-#### a. Deux limites concrètes de l'architecture actuelle
+#### a. Deux limites de l'architecture actuelle
 
-1. **Pas de temps réel :** L'export CSV est mensuel — l'intervalle entre la collecte et la prédiction est donc d'un mois minimum, ce qui rend impossible toute prédiction à l'heure ou même à la journée exigée par la direction.
-2. **Pas de partage ni de scalabilité :** Le PC du data scientist est un point de défaillance unique et non partageable — les autres analystes n'ont pas accès aux données et aux modèles, et la capacité de calcul est fixe et limitée à la machine physique, sans possibilité d'absorber les pics de demande (vendredi soir, fêtes).
+1. **Données trop fraîches impossible :** avec un export CSV mensuel, les prédictions ont au moins un mois de retard. On ne peut pas faire de prédictions à l'heure dans ces conditions.
+2. **Travail en silo :** tout repose sur le PC du data scientist. Si la machine tombe en panne, tout s'arrête. Les autres analystes n'ont accès à rien, et il n'y a aucune possibilité d'augmenter la puissance de calcul lors des pics.
 
 ---
 
 #### b. Besoins de la direction ↔ caractéristiques NIST
 
-| Besoin | Caractéristique NIST | Explication |
+| Besoin | Caractéristique NIST | Pourquoi |
 |---|---|---|
-| Prédictions en quasi temps réel (chaque heure) | **Service mesuré (pay-as-you-go)** | Les ressources de calcul sont consommées et facturées uniquement pendant l'heure de calcul, ce qui rend économiquement viable un traitement récurrent toutes les heures. |
-| Tableau de bord partagé, sans installation locale | **Libre-service à la demande** | Les analystes accèdent à l'outil depuis leur navigateur à tout moment, sans demander une intervention informatique préalable ni installer quoi que ce soit. |
-| Augmenter la capacité lors des pics | **Élasticité rapide** | Le cloud peut allouer automatiquement des ressources supplémentaires en quelques minutes lors des pics (vendredi soir, fêtes) et les libérer ensuite. |
-| Maîtriser les coûts et pouvoir changer de fournisseur | **Mutualisation des ressources** | Les ressources partagées entre de nombreux clients réduisent les coûts unitaires ; en utilisant des standards ouverts (API S3, containers), la PME conserve la portabilité inter-fournisseurs. |
-| Données clients dans un environnement contrôlé | **Mutualisation des ressources** *(cloud privé)* | Un cloud privé ou un segment dédié permet de contrôler l'emplacement et l'accès aux données clients tout en conservant les bénéfices du cloud. |
+| Prédictions toutes les heures | **Service mesuré** | On ne paye que pendant le calcul, ce qui rend viable un traitement récurrent sans gaspiller des ressources. |
+| Tableau de bord partagé, sans installation | **Libre-service à la demande** | Les analystes accèdent à l'outil depuis le navigateur à tout moment, sans passer par l'IT. |
+| Plus de capacité lors des pics | **Élasticité rapide** | Le cloud monte en charge automatiquement le vendredi soir et redescend après. |
+| Maîtriser les coûts, pouvoir changer de fournisseur | **Mutualisation des ressources** | Les ressources partagées réduisent les coûts ; les standards ouverts (S3, containers) facilitent la portabilité. |
+| Données clients dans un environnement contrôlé | **Mutualisation des ressources (cloud privé)** | Un cloud privé ou segment dédié garantit que les données ne quittent pas un périmètre maîtrisé. |
 
 ---
 
 #### c. Modèles de service pour chaque composant
 
 **(i) Tableau de bord partagé → SaaS**  
-Un outil de visualisation SaaS (ex. Metabase Cloud, Looker, Power BI en ligne) est accessible depuis n'importe quel navigateur sans installation, géré et maintenu par le fournisseur. C'est le modèle le plus adapté pour un partage immédiat entre analystes.
+Un outil comme Metabase Cloud ou Power BI en ligne est accessible depuis n'importe quel navigateur, sans rien installer. Le fournisseur gère les mises à jour et la disponibilité.
 
 **(ii) Calcul des prédictions à l'heure → FaaS ou PaaS**  
-Le FaaS (ex. AWS Lambda, Google Cloud Functions) est idéal si le modèle de prédiction est léger : une fonction est déclenchée toutes les heures par un planificateur (cron), s'exécute et s'arrête. Si le modèle est plus lourd (Spark, MLflow), un PaaS managé (ex. Databricks, Vertex AI) est plus adapté.
+Si le modèle est léger, un FaaS déclenché toutes les heures par un cron suffit et coûte peu. Si les données sont volumineuses (PySpark, MLflow), un PaaS comme Databricks ou Vertex AI sera plus adapté.
 
-**(iii) Stockage des données clients → IaaS ou cloud privé managé**  
-Pour respecter la contrainte de conformité, les données clients doivent rester dans un environnement contrôlé. Un stockage sur IaaS dans une région géographique maîtrisée (ou un cloud privé on-premise) avec chiffrement et contrôle d'accès fin est recommandé.
+**(iii) Stockage des données clients → IaaS (cloud privé)**  
+Pour la conformité, les données clients doivent rester dans un environnement contrôlé, avec chiffrement et accès restreint. Un IaaS dans une région maîtrisée ou un stockage on-premise connecté au cloud est la bonne approche.
 
 ---
 
-#### d. Modèle de déploiement recommandé
+#### d. Modèle de déploiement recommandé : Cloud hybride
 
-**Cloud hybride.**
-
-Les données clients sensibles (soumises à conformité réglementaire) sont conservées dans un cloud privé ou on-premise, garantissant le contrôle total sur leur localisation et leur accès. En parallèle, les charges de travail non sensibles (entraînement de modèles, tableaux de bord, calcul des prédictions) sont hébergées dans un cloud public, ce qui permet de bénéficier de l'élasticité lors des pics (vendredi soir, fêtes) et de ne payer que ce qui est consommé. Les deux environnements communiquent via des API sécurisées.
+Les données clients sensibles restent on-premise ou dans un cloud privé pour respecter les obligations légales. Les traitements non sensibles (entraînement des modèles, tableaux de bord, calcul des prédictions) tournent dans le cloud public pour bénéficier de l'élasticité aux moments de pic. Les deux environnements communiquent via des API sécurisées. C'est le seul modèle qui réconcilie conformité et flexibilité.
 
 ---
 
 #### e. Trois stratégies pour limiter le vendor lock-in
 
-1. **Utiliser des standards et outils open source** : privilégier des formats de données ouverts (Parquet, CSV, Delta Lake), des APIs standardisées (protocole S3 pour le stockage objet, JDBC/ODBC pour les bases de données) et des outils portables (MinIO, Kafka, Spark) qui fonctionnent chez n'importe quel fournisseur cloud.
+1. **Utiliser des outils et formats open source :** stocker les données en Parquet ou CSV, utiliser le protocole S3 (compatible MinIO, AWS, GCS…), et s'appuyer sur Kafka ou Spark plutôt que des services propriétaires — tout ça tourne chez n'importe quel fournisseur.
 
-2. **Conteneuriser les applications** : empaqueter les modèles et pipelines dans des images Docker déployables sur tout environnement Kubernetes (EKS, GKE, AKS, ou on-premise) — le code n'est plus lié à un service propriétaire spécifique.
+2. **Conteneuriser les applications :** packager les modèles et pipelines dans des images Docker déployables sur n'importe quel cluster Kubernetes (EKS, GKE, AKS, ou on-premise). Le code ne dépend plus d'un service cloud spécifique.
 
-3. **Adopter une stratégie multi-cloud ou d'abstraction** : utiliser une couche d'abstraction (ex. Terraform pour l'infrastructure, un orchestrateur neutre comme Airflow pour les pipelines) et tester régulièrement la migration d'une charge de travail vers un autre fournisseur, afin que le coût et le risque de changement restent maîtrisés.
+3. **Abstraire l'infrastructure avec des outils neutres :** utiliser Terraform pour décrire l'infrastructure et Airflow pour orchestrer les pipelines. Ces outils sont indépendants du fournisseur, ce qui facilite une migration si on doit changer de cloud.
