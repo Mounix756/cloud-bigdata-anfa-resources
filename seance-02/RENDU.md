@@ -32,9 +32,9 @@ Ce que j'ai surtout retenu : l'ordre des instructions dans un Dockerfile n'est p
 
 ### Notebook Jupyter
 ![Notebook Jupyter](captures/jupyter-pandas-01.png)
-(captures/jupyter-pandas-02.png)
-(captures/jupyter-pandas-03.png)
-(captures/jupyter-pandas-04.png)
+![Notebook Jupyter](captures/jupyter-pandas-02.png)
+![Notebook Jupyter](captures/jupyter-pandas-03.png)
+![Notebook Jupyter](captures/jupyter-pandas-04.png)
 
 ---
 
