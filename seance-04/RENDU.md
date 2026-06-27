@@ -32,15 +32,18 @@ Ce qui m'a le plus frappé : avec `terraform destroy`, trois ressources (contene
 
 ### terraform plan (création initiale)
 ![terraform plan](captures/terraform-plan.png)
+![terraform plan](captures/terraform-plan-2.png)
 
 ### terraform apply réussi
 ![terraform apply](captures/terraform-apply.png)
+![terraform apply](captures/terraform-apply-2.png)
 
 ### Console MinIO créée par Terraform
 ![Console MinIO](captures/console-minio-tf.png)
 
 ### terraform destroy
 ![terraform destroy](captures/terraform-destroy.png)
+![terraform destroy](captures/terraform-destroy-2.png)
 
 ---
 
