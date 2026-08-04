@@ -11,8 +11,7 @@ services:
     container_name: anfa-mlflow
     restart: unless-stopped
     working_dir: /mlflow
-    ports:
-      - "5000:5000"       # UI et API MLflow
+    network_mode: host    # contourne le NAT/bridge Docker (bloqué par le réseau WiFi local)
     volumes:
       # Volume persistant : la base SQLite et les artefacts survivent
       # à un redémarrage du conteneur.
